@@ -8,10 +8,10 @@ if(NOT DEFINED PICO_SDK_PATH)
 endif()
 
 include(pico_sdk_import.cmake)
-include(rp2040_hat_aws_c_sdk_version.cmake)
+include(wiznet_pico_aws_c_sdk_version.cmake)
 
 # Set project name
-set(PROJECT_NAME RP2040-HAT-AWS-C)
+set(PROJECT_NAME WIZNET-PICO-AWS-C)
 
 # Set project informations
 project(${PROJECT_NAME} C CXX ASM)
