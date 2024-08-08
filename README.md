@@ -26,20 +26,20 @@ The AWS IoT SDK examples were tested by configuring the development environment 
 <a name="hardware_requirements"></a>
 ## Hardware requirements
 
-The AWS IoT SDK examples use **Raspberry Pi Pico** and **WIZnet Ethernet HAT** - ethernet I/O module built on WIZnet's [**W5100S**][link-w5100s] ethernet chip, **W5100S-EVB-Pico** - ethernet I/O module built on [**RP2040**][link-rp2040] and WIZnet's [**W5100S**][link-w5100s] ethernet chip or **W5500-EVB-Pico** - ethernet I/O module built on [**RP2040**][link-rp2040] and WIZnet's [**W5500**][link-w5500] ethernet chip.
+The AWS IoT SDK examples use **Raspberry Pi Pico** and **WIZnet Ethernet HAT** - ethernet I/O module built on WIZnet's [**W5100S**][link-w5100s] ethernet chip, **W5100S-EVB-Pico** - ethernet I/O module built on [**RP2040**][link-rp2040] and WIZnet's [**W5100S**][link-w5100s] ethernet chip or **W5500-EVB-Pico** and **W55RP20-EVB-Pico** - ethernet I/O module built on [**RP2040**][link-rp2040] and WIZnet's [**W5500**][link-w5500] ethernet chip.
 
-- [**Raspberry Pi Pico**][link-raspberry_pi_pico]
-
-- [**WIZnet Ethernet HAT**][link-wiznet_ethernet_hat]
+- [**Raspberry Pi Pico**][link-raspberry_pi_pico] & [**WIZnet Ethernet HAT**][link-wiznet_ethernet_hat]
 
 - [**W5100S-EVB-Pico**][link-w5100s-evb-pico]
 
 - [**W5500-EVB-Pico**][link-w5500-evb-pico]
 
+- [**W55RP20-EVB-Pico**][link-w55rp20-evb-pico]
+
 <a name="aws_iot_sdk_example_structure"></a>
 ## AWS IoT SDK example structure
 
-Examples are available at '**RP2040-HAT-AWS-C/examples/**' directory. As of now, following examples are provided.
+Examples are available at '**WIZnet-PICO-AWS-C/examples/**' directory. As of now, following examples are provided.
 
 - [**HTTP & HTTPS**][link-http_https]
 - [**Connect AWS IoT through MQTT**][link-connect_aws_iot_through_mqtt]
@@ -52,7 +52,7 @@ Note that **ioLibrary_Driver**, **mbedtls**, **aws-iot-device-sdk-embedded-C**, 
 - **pico-sdk** is made available by Pico to enable developers to build software applications for the Pico platform.
 - **pico-extras** has additional libraries that are not yet ready for inclusion the Pico SDK proper, or are just useful but don't necessarily belong in the Pico SDK.
 
-Libraries are located in the '**RP2040-HAT-AWS-C/libraries/**' directory.
+Libraries are located in the '**WIZnet-PICO-AWS-C/libraries/**' directory.
 
 - [**ioLibrary_Driver**][link-iolibrary_driver]
 - [**mbedtls**][link-mbedtls]
@@ -60,7 +60,7 @@ Libraries are located in the '**RP2040-HAT-AWS-C/libraries/**' directory.
 - [**pico-sdk**][link-pico_sdk]
 - [**pico-extras**][link-pico_extras]
 
-If you want to modify the code that MCU-dependent and use a MCU other than **RP2040**, you can modify it in the **RP2040-HAT-AWS-C/port/** directory.
+If you want to modify the code that MCU-dependent and use a MCU other than **RP2040**, you can modify it in the **WIZnet-PICO-AWS-C/port/** directory.
 
 - [**ioLibrary_Driver**][link-port_iolibrary_driver]
 - [**mbedtls**][link-port_mbedtls]
@@ -69,7 +69,7 @@ If you want to modify the code that MCU-dependent and use a MCU other than **RP2
 
 The structure of this RP2040-HAT-C 2.0.0 version or higher has changed a lot compared to the previous version. If you want to refer to the previous version, please refer to the link below.
 
-- [**RP2040-HAT-AWS-C 1.0.0 version**][link-rp2040_hat_aws_c_1_0_0_version]
+- [**WIZnet-PICO-AWS-C 1.0.0 version**][link-rp2040_hat_aws_c_1_0_0_version]
 
 
 
@@ -89,52 +89,36 @@ cd [user path]
 cd D:/RP2040
 
 /* Clone */
-git clone --recurse-submodules https://github.com/Wiznet/RP2040-HAT-AWS-C.git
+git clone --recurse-submodules https://github.com/WIZnet-ioNIC/WIZnet-PICO-AWS-C.git
 ```
 
 With Visual Studio Code, the library set as a submodule is automatically downloaded, so it doesn't matter whether the library set as a submodule is an empty directory or not, so refer to it.
 
 2. Setup ethetnet chip
 
-Setup the ethernet chip in '**CMakeLists.txt**' in '**RP2040-HAT-AWS-C/**' directory according to the evaluation board to be used referring to the following.
+Setup the ethernet chip in '**CMakeLists.txt**' in '**WIZnet-PICO-AWS-C/**' directory according to the evaluation board to be used referring to the following.
 
-- WIZnet Ethernet HAT : W5100S
-- W5100S-EVB-Pico : W5100S
-- W5500-EVB-Pico : W5500
+- WIZnet Ethernet HAT
+- W5100S-EVB-Pico
+- W5500-EVB-Pico
+- W55RP20-EVB-Pico
 
-For example, when using WIZnet Ethernet HAT or W5100S-EVB-Pico :
+For example, when using WIZnet Ethernet HAT :
 
 ```cpp
-# Set ethernet chip
-set(WIZNET_CHIP W5100S)
+# Set board
+set(BOARD_NAME WIZnet_Ethernet_HAT)
 ```
 
 When using W5500-EVB-Pico :
 
 ```cpp
-# Set ethernet chip
-set(WIZNET_CHIP W5500)
+# Set board
+set(BOARD_NAME W5500_EVB_PICO)
 ```
 
-3. Patch
 
-With Visual Studio Code, each library set as a submodule is automatically patched, but if you do not use Visual Studio Code, each library set as a submodule must be manually patched with the Git commands below in each library directory.
-
-- aws-iot-device-sdk-embedded-C
-
-```cpp
-/* Change directory */
-// change to the 'coreHTTP' library directory inside the 'aws-iot-device-sdk-embedded-C' library directory.
-cd [user path]/RP2040-HAT-AWS-C/libraries/aws-iot-device-sdk-embedded-C/libraries/standard/coreHTTP
-
-// e.g.
-cd D:/RP2040/RP2040-HAT-AWS-C/libraries/aws-iot-device-sdk-embedded-C/libraries/standard/coreHTTP
-
-/* Patch */
-git apply --ignore-whitespace ../../../../../patches/01_aws_iot_device_sdk_embedded_c_corehttp_network_interface.patch
-```
-
-4. Test
+3. Test
 
 Please refer to 'README.md' in each example directory to find detail guide for testing AWS IoT SDK examples.
 
@@ -146,7 +130,7 @@ Please refer to 'README.md' in each example directory to find detail guide for t
 We moved the MCU dependent code to the port directory. The tree of port is shown below.
 
 ```
-RP2040-HAT-AWS-C
+WIZnet-PICO-AWS-C
 ┣ port
     ┣ aws-iot-device-sdk-embedded-C
     ┃   ┣ inc
@@ -169,10 +153,14 @@ RP2040-HAT-AWS-C
     ┣ ioLibrary_Driver
     ┃   ┣ inc
     ┃   ┃   ┣ w5x00_gpio_irq.h
-    ┃   ┃   ┗ w5x00_spi.h
+    ┃   ┃   ┣ w5x00_spi.h
+    ┃   ┃   ┣ wiznet_spi_pio.h
+    ┃   ┃   ┗ wiznet_spi.h
     ┃   ┗ src
     ┃   ┃   ┣ w5x00_gpio_irq.c
-    ┃   ┃   ┗ w5x00_spi.c
+    ┃   ┃   ┣ w5x00_spi.c
+    ┃   ┃   ┣ wiznet_spi_pio.c
+    ┃   ┃   ┗ wiznet_spi_pio.pio
     ┣ mbedtls
     ┃   ┗ inc
     ┃   ┃   ┗ ssl_config.h
@@ -185,7 +173,7 @@ RP2040-HAT-AWS-C
 
 - **ioLibrary_Driver**
 
-If you want to change things related to **SPI**, such as the SPI port number and SPI read/write function, or GPIO port number and function related to **interrupt** or use a different MCU without using the RP2040, you need to change the code in the '**RP2040-HAT-AWS-C/port/ioLibrary_Driver/**' directory. Here is information about functions.
+If you want to change things related to **SPI**, such as the SPI port number and SPI read/write function, or GPIO port number and function related to **interrupt** or use a different MCU without using the RP2040, you need to change the code in the '**WIZnet-PICO-AWS-C/port/ioLibrary_Driver/**' directory. Here is information about functions.
 
 ```cpp
 /* W5x00 */
@@ -367,7 +355,7 @@ static void wizchip_gpio_interrupt_callback(uint gpio, uint32_t events);
 
 - **timer**
 
-If you want to change things related to the **timer**. Also, if you use a different MCU without using the RP2040, you need to change the code in the '**RP2040-HAT-AWS-C/port/timer/**' directory. Here is information about functions.
+If you want to change things related to the **timer**. Also, if you use a different MCU without using the RP2040, you need to change the code in the '**WIZnet-PICO-AWS-C/port/timer/**' directory. Here is information about functions.
 
 ```cpp
 /* Timer */
@@ -411,22 +399,19 @@ Link
 [link-w5100s]: https://docs.wiznet.io/Product/iEthernet/W5100S/overview
 [link-w5500]: https://docs.wiznet.io/Product/iEthernet/W5500/overview
 [link-raspberry_pi_pico]: https://www.raspberrypi.org/products/raspberry-pi-pico/
-[link-raspberry_pi_pico_main]: https://github.com/Wiznet/RP2040-HAT-AWS-C/blob/main/static/images/getting_started/raspberry_pi_pico_main.png
 [link-wiznet_ethernet_hat]: https://docs.wiznet.io/Product/Open-Source-Hardware/wiznet_ethernet_hat
-[link-wiznet_ethernet_hat_main]: https://github.com/Wiznet/RP2040-HAT-AWS-C/blob/main/static/images/getting_started/wiznet_ethernet_hat_main.png
 [link-w5100s-evb-pico]: https://docs.wiznet.io/Product/iEthernet/W5100S/w5100s-evb-pico
-[link-w5100s-evb-pico_main]: https://github.com/Wiznet/RP2040-HAT-AWS-C/blob/main/static/images/getting_started/w5100s-evb-pico_main.png
 [link-w5500-evb-pico]: https://docs.wiznet.io/Product/iEthernet/W5500/w5500-evb-pico
-[link-w5500-evb-pico_main]: https://github.com/Wiznet/RP2040-HAT-AWS-C/blob/main/static/images/getting_started/w5500-evb-pico_main.png
-[link-http_https]: https://github.com/Wiznet/RP2040-HAT-AWS-C/tree/main/examples/aws_iot_http
-[link-connect_aws_iot_through_mqtt]: https://github.com/Wiznet/RP2040-HAT-AWS-C/tree/main/examples/aws_iot_mqtt
+[link-w55rp20-evb-pico]: https://docs.wiznet.io/Product/ioNIC/W55RP20/w55rp20-evb-pico
+[link-http_https]: https://github.com/WIZnet-ioNIC/WIZnet-PICO-AWS-C/tree/main/examples/aws_iot_http
+[link-connect_aws_iot_through_mqtt]: https://github.com/WIZnet-ioNIC/WIZnet-PICO-AWS-C/tree/main/examples/aws_iot_mqtt
 [link-iolibrary_driver]: https://github.com/Wiznet/ioLibrary_Driver
 [link-mbedtls]: https://github.com/ARMmbed/mbedtls
 [link-aws_iot_device_sdk_embedded_c]: https://github.com/aws/aws-iot-device-sdk-embedded-C
 [link-pico_sdk]: https://github.com/raspberrypi/pico-sdk
 [link-pico_extras]: https://github.com/raspberrypi/pico-extras
-[link-port_iolibrary_driver]: https://github.com/Wiznet/RP2040-HAT-AWS-C/tree/main/port/ioLibrary_Driver
-[link-port_mbedtls]: https://github.com/Wiznet/RP2040-HAT-AWS-C/tree/main/port/mbedtls
-[link-port_aws_iot_device_sdk_embedded_c]: https://github.com/Wiznet/RP2040-HAT-AWS-C/tree/main/port/aws-iot-device-sdk-embedded-C
-[link-port_timer]: https://github.com/Wiznet/RP2040-HAT-AWS-C/tree/main/port/timer
-[link-rp2040_hat_aws_c_1_0_0_version]: https://github.com/Wiznet/RP2040-HAT-AWS-C/tree/0e3f9188b56df9dd082dbacb252cb7cf37e05c55
+[link-port_iolibrary_driver]: https://github.com/Wiznet/WIZnet-PICO-AWS-C/tree/main/port/ioLibrary_Driver
+[link-port_mbedtls]: https://github.com/Wiznet/WIZnet-PICO-AWS-C/tree/main/port/mbedtls
+[link-port_aws_iot_device_sdk_embedded_c]: https://github.com/WIZnet-ioNIC/WIZnet-PICO-AWS-C/tree/main/port/aws-iot-device-sdk-embedded-C
+[link-port_timer]: https://github.com/WIZnet-ioNIC/WIZnet-PICO-AWS-C/tree/main/port/timer
+[link-rp2040_hat_aws_c_1_0_0_version]: https://github.com/WIZnet-ioNIC/WIZnet-PICO-AWS-C/tree/0e3f9188b56df9dd082dbacb252cb7cf37e05c55
