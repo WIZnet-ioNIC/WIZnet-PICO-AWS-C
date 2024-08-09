@@ -28,12 +28,13 @@ The AWS IoT SDK examples were tested by configuring the development environment 
 
 The AWS IoT SDK examples use **Raspberry Pi Pico** and **WIZnet Ethernet HAT** - ethernet I/O module built on WIZnet's [**W5100S**][link-w5100s] ethernet chip, **W5100S-EVB-Pico** - ethernet I/O module built on [**RP2040**][link-rp2040] and WIZnet's [**W5100S**][link-w5100s] ethernet chip or **W5500-EVB-Pico** and **W55RP20-EVB-Pico** - ethernet I/O module built on [**RP2040**][link-rp2040] and WIZnet's [**W5500**][link-w5500] ethernet chip.
 
-- [**Raspberry Pi Pico**][link-raspberry_pi_pico] or [**Raspberry Pi Pico2**][link-raspberry_pi_pico2] & [**WIZnet Ethernet HAT**][link-wiznet_ethernet_hat]
+- [**Raspberry Pi Pico**][link-raspberry_pi_pico] & [**WIZnet Ethernet HAT**][link-wiznet_ethernet_hat]
+
 - [**W5100S-EVB-Pico**][link-w5100s-evb-pico]
+
 - [**W5500-EVB-Pico**][link-w5500-evb-pico]
+
 - [**W55RP20-EVB-Pico**][link-w55rp20-evb-pico]
-- [**W5100S-EVB-Pico2**][link-w5100s-evb-pico2]
-- [**W5500-EVB-Pico2**][link-w5500-evb-pico2]
 
 <a name="aws_iot_sdk_example_structure"></a>
 ## AWS IoT SDK example structure
@@ -101,8 +102,6 @@ Setup the ethernet chip in '**CMakeLists.txt**' in '**WIZnet-PICO-AWS-C/**' dire
 - W5100S-EVB-Pico
 - W5500-EVB-Pico
 - W55RP20-EVB-Pico
-- W5100S-EVB-Pico2
-- W5500-EVB-Pico2
 
 For example, when using WIZnet Ethernet HAT :
 
@@ -118,26 +117,6 @@ When using W5500-EVB-Pico :
 set(BOARD_NAME W5500_EVB_PICO)
 ```
 
-When using W55RP20-EVB-Pico :
-
-```cpp
-# Set board
-set(BOARD_NAME W55RP20-EVB-Pico)
-```
-
-When using W5100S-EVB-Pico2 :
-
-```cpp
-# Set board
-set(BOARD_NAME W5100S-EVB-Pico2)
-```
-
-When using W5500-EVB-Pico2 :
-
-```cpp
-# Set board
-set(BOARD_NAME W5500-EVB-Pico2)
-```
 
 3. Test
 
@@ -420,13 +399,10 @@ Link
 [link-w5100s]: https://docs.wiznet.io/Product/iEthernet/W5100S/overview
 [link-w5500]: https://docs.wiznet.io/Product/iEthernet/W5500/overview
 [link-raspberry_pi_pico]: https://www.raspberrypi.org/products/raspberry-pi-pico/
-[link-raspberry_pi_pico2]: https://www.raspberrypi.com/products/raspberry-pi-pico-2/
 [link-wiznet_ethernet_hat]: https://docs.wiznet.io/Product/Open-Source-Hardware/wiznet_ethernet_hat
 [link-w5100s-evb-pico]: https://docs.wiznet.io/Product/iEthernet/W5100S/w5100s-evb-pico
 [link-w5500-evb-pico]: https://docs.wiznet.io/Product/iEthernet/W5500/w5500-evb-pico
 [link-w55rp20-evb-pico]: https://docs.wiznet.io/Product/ioNIC/W55RP20/w55rp20-evb-pico
-[link-w5100s-evb-pico2]: https://docs.wiznet.io/Product/iEthernet/W5100S/w5100s-evb-pico2
-[link-w5500-evb-pico2]: https://docs.wiznet.io/Product/iEthernet/W5500/w5500-evb-pico2
 [link-http_https]: https://github.com/WIZnet-ioNIC/WIZnet-PICO-AWS-C/tree/main/examples/aws_iot_http
 [link-connect_aws_iot_through_mqtt]: https://github.com/WIZnet-ioNIC/WIZnet-PICO-AWS-C/tree/main/examples/aws_iot_mqtt
 [link-iolibrary_driver]: https://github.com/Wiznet/ioLibrary_Driver
