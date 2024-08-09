@@ -101,6 +101,8 @@ Setup the ethernet chip in '**CMakeLists.txt**' in '**WIZnet-PICO-AWS-C/**' dire
 - W5100S-EVB-Pico
 - W5500-EVB-Pico
 - W55RP20-EVB-Pico
+- W5100S-EVB-Pico2
+- W5500-EVB-Pico2
 
 For example, when using WIZnet Ethernet HAT :
 
@@ -136,7 +138,6 @@ When using W5500-EVB-Pico2 :
 # Set board
 set(BOARD_NAME W5500_EVB_PICO2)
 ```
-
 
 3. Test
 
