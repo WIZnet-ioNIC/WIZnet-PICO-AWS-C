@@ -26,7 +26,7 @@ The AWS IoT SDK examples were tested by configuring the development environment 
 <a name="hardware_requirements"></a>
 ## Hardware requirements
 
-The AWS IoT SDK examples use **Raspberry Pi Pico** and **WIZnet Ethernet HAT** - ethernet I/O module built on WIZnet's [**W5100S**][link-w5100s] ethernet chip, **W5100S-EVB-Pico** - ethernet I/O module built on [**RP2040**][link-rp2040] and WIZnet's [**W5100S**][link-w5100s] ethernet chip or **W5500-EVB-Pico** and **W55RP20-EVB-Pico** - ethernet I/O module built on [**RP2040**][link-rp2040] and WIZnet's [**W5500**][link-w5500] ethernet chip.
+The AWS IoT SDK examples use **Raspberry Pi Pico** and **WIZnet Ethernet HAT** - ethernet I/O module built on WIZnet's [**W5100S**][link-w5100s] ethernet chip, **W5100S-EVB-Pico** - ethernet I/O module built on [**RP2040**][link-rp2040] and WIZnet's [**W5100S**][link-w5100s] ethernet chip,  **W5500-EVB-Pico** and **W55RP20-EVB-Pico** - ethernet I/O module built on [**RP2040**][link-rp2040] and WIZnet's [**W5500**][link-w5500] ethernet chip, **W5100S-EVB-Pico2** - ethernet I/O module built on [**RP2350**][link-rp2350] and WIZnet's [**W5100S**][link-w5100s] ethernet chip or **W5100S-EVB-Pico2** - ethernet I/O module built on [**RP2350**][link-rp2350] and WIZnet's [**W5100S**][link-w5100s] ethernet chip.
 
 - [**Raspberry Pi Pico**][link-raspberry_pi_pico] or [**Raspberry Pi Pico2**][link-raspberry_pi_pico2] & [**WIZnet Ethernet HAT**][link-wiznet_ethernet_hat]
 - [**W5100S-EVB-Pico**][link-w5100s-evb-pico]
@@ -417,6 +417,7 @@ Link
 
 [link-getting_started_with_raspberry_pi_pico]: https://datasheets.raspberrypi.org/pico/getting-started-with-pico.pdf
 [link-rp2040]: https://www.raspberrypi.org/products/rp2040/
+[link-rp2350]: https://www.raspberrypi.com/products/rp2350/
 [link-w5100s]: https://docs.wiznet.io/Product/iEthernet/W5100S/overview
 [link-w5500]: https://docs.wiznet.io/Product/iEthernet/W5500/overview
 [link-raspberry_pi_pico]: https://www.raspberrypi.org/products/raspberry-pi-pico/
@@ -434,8 +435,8 @@ Link
 [link-aws_iot_device_sdk_embedded_c]: https://github.com/aws/aws-iot-device-sdk-embedded-C
 [link-pico_sdk]: https://github.com/raspberrypi/pico-sdk
 [link-pico_extras]: https://github.com/raspberrypi/pico-extras
-[link-port_iolibrary_driver]: https://github.com/Wiznet/WIZnet-PICO-AWS-C/tree/main/port/ioLibrary_Driver
-[link-port_mbedtls]: https://github.com/Wiznet/WIZnet-PICO-AWS-C/tree/main/port/mbedtls
+[link-port_iolibrary_driver]: https://github.com/WIZnet-ioNIC/WIZnet-PICO-AWS-C/tree/main/port/ioLibrary_Driver
+[link-port_mbedtls]: https://github.com/WIZnet-ioNIC/WIZnet-PICO-AWS-C/tree/main/port/mbedtls
 [link-port_aws_iot_device_sdk_embedded_c]: https://github.com/WIZnet-ioNIC/WIZnet-PICO-AWS-C/tree/main/port/aws-iot-device-sdk-embedded-C
 [link-port_timer]: https://github.com/WIZnet-ioNIC/WIZnet-PICO-AWS-C/tree/main/port/timer
 [link-rp2040_hat_aws_c_1_0_0_version]: https://github.com/WIZnet-ioNIC/WIZnet-PICO-AWS-C/tree/0e3f9188b56df9dd082dbacb252cb7cf37e05c55

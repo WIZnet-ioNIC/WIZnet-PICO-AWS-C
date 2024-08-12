@@ -111,7 +111,7 @@ Link
 -->
 
 [link-tera_term]: https://osdn.net/projects/ttssh2/releases/
-[link-raspberry_pi_pico_usb_mass_storage]: https://github.com/Wiznet/RP2040-HAT-AWS-C/blob/main/static/images/aws_iot_http/raspberry_pi_pico_usb_mass_storage.png
-[link-connect_to_serial_com_port]: https://github.com/Wiznet/RP2040-HAT-AWS-C/blob/main/static/images/aws_iot_http/connect_to_serial_com_port.png
-[link-dns_server_ip_and_ciphersuite]: https://github.com/Wiznet/RP2040-HAT-AWS-C/blob/main/static/images/aws_iot_http/dns_server_ip_and_ciphersuite.png
-[link-http_body_information]: https://github.com/Wiznet/RP2040-HAT-AWS-C/blob/main/static/images/aws_iot_http/http_body_information.png
+[link-raspberry_pi_pico_usb_mass_storage]: https://github.com/WIZnet-ioNIC/WIZnet-PICO-AWS-C/blob/main/static/images/aws_iot_http/raspberry_pi_pico_usb_mass_storage.png
+[link-connect_to_serial_com_port]: https://github.com/WIZnet-ioNIC/WIZnet-PICO-AWS-C/blob/main/static/images/aws_iot_http/connect_to_serial_com_port.png
+[link-dns_server_ip_and_ciphersuite]: https://github.com/WIZnet-ioNIC/WIZnet-PICO-AWS-C/blob/main/static/images/aws_iot_http/dns_server_ip_and_ciphersuite.png
+[link-http_body_information]: https://github.com/WIZnet-ioNIC/WIZnet-PICO-AWS-C/blob/main/static/images/aws_iot_http/http_body_information.png
