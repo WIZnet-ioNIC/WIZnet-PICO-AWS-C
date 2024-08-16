@@ -66,9 +66,9 @@ If you want to modify the code that MCU-dependent and use a MCU other than **RP2
 - [**aws-iot-device-sdk-embedded-C**][link-port_aws_iot_device_sdk_embedded_c]
 - [**timer**][link-port_timer]
 
-The structure of this RP2040-HAT-C 2.0.0 version or higher has changed a lot compared to the previous version. If you want to refer to the previous version, please refer to the link below.
+The structure of this WIZnet-PICO-AWS-C 2.0.0 version or higher has changed a lot compared to the previous version. If you want to refer to the previous version, please refer to the link below.
 
-- [**WIZnet-PICO-AWS-C 1.0.0 version**][link-rp2040_hat_aws_c_1_0_0_version]
+- [**WIZnet-PICO-AWS-C 1.0.0 version**][link-wiznet_pico_aws_c_1_0_0_version]
 
 
 
@@ -439,4 +439,4 @@ Link
 [link-port_mbedtls]: https://github.com/WIZnet-ioNIC/WIZnet-PICO-AWS-C/tree/main/port/mbedtls
 [link-port_aws_iot_device_sdk_embedded_c]: https://github.com/WIZnet-ioNIC/WIZnet-PICO-AWS-C/tree/main/port/aws-iot-device-sdk-embedded-C
 [link-port_timer]: https://github.com/WIZnet-ioNIC/WIZnet-PICO-AWS-C/tree/main/port/timer
-[link-rp2040_hat_aws_c_1_0_0_version]: https://github.com/WIZnet-ioNIC/WIZnet-PICO-AWS-C/tree/0e3f9188b56df9dd082dbacb252cb7cf37e05c55
+[link-wiznet_pico_aws_c_1_0_0_version]: https://github.com/WIZnet-ioNIC/WIZnet-PICO-AWS-C/tree/0e3f9188b56df9dd082dbacb252cb7cf37e05c55
