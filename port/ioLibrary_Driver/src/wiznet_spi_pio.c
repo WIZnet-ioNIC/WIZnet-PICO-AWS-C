@@ -219,11 +219,7 @@ static bool pio_spi_transfer(spi_pio_state_t *state, const uint8_t *tx, size_t t
 
     if (rx != NULL && tx != NULL) {    
         assert(tx && tx_length && rx_length);
-        DUMP_SPI_TRANSACTIONS(
-                printf("[%lu] bus TX/RX %u bytes rx %u:", counter++, tx_length, rx_length);
-                dump_bytes(tx, tx_length);
-        )
-
+        
         pio_sm_set_enabled(state->pio, state->pio_sm, false); // disable sm
         pio_sm_set_wrap(state->pio, state->pio_sm, state->pio_offset + SPI_OFFSET_WRITE_BITS, state->pio_offset + SPI_OFFSET_READ_END - 1); 
         pio_sm_clear_fifos(state->pio, state->pio_sm); // clear fifos from previous run
