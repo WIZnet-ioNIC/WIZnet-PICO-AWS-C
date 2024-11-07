@@ -1,19 +1,15 @@
-# Getting Started with AWS IoT SDK Examples
+# Getting Started Guide for AWS IoT Core
 
-These sections will guide you through a series of steps from configuring development environment to running AWS IoT SDK examples using the **WIZnet's ethernet products**.
+## 1. Document information
 
-- [**Development environment configuration**](#development_environment_configuration)
-- [**Hardware requirements**](#hardware_requirements)
-- [**AWS IoT SDK example structure**](#aws_iot_sdk_example_structure)
-- [**AWS IoT SDK example testing**](#aws_iot_sdk_example_testing)
-- [**How to use port directory**](#how_to_use_port_directory)
+### 1.1 Document revision history
+| Version  | Date | Description                                    |
+| :--: | -------- | ---------------------------------------------- |
+|  1.0.0   | 2021-11-2   | Initial Version                            |
+|  2.0.0   | 2024-11-7   | Updated                            |
 
-
-
-<a name="development_environment_configuration"></a>
-## Development environment configuration
-
-To test the AWS IoT SDK examples, the development environment must be configured to use Raspberry Pi Pico, W5100S-EVB-Pico, W5500-EVB-Pico, W55RP20-EVB-Pico, W5100S-EVB-Pico2 or W5500-EVB-Pico2.
+<a name="Applicable_operating_systems_for_this_guide"></a>
+### 1.2 Applicable operating systems for this guide
 
 The AWS IoT SDK examples were tested by configuring the development environment for **Windows**. Please refer to the '**9.2. Building on MS Windows**' section of '**Getting started with Raspberry Pi Pico**' document below and configure accordingly.
 
@@ -21,12 +17,12 @@ The AWS IoT SDK examples were tested by configuring the development environment 
 
 **Visual Studio Code** was used during development and testing of AWS IoT SDK examples, the guide document in each directory was prepared also base on development with Visual Studio Code. Please refer to corresponding document.
 
-
-
-<a name="hardware_requirements"></a>
-## Hardware requirements
+## 2. Overview
 
 The AWS IoT SDK examples use **Raspberry Pi Pico** and **WIZnet Ethernet HAT** - ethernet I/O module built on WIZnet's [**W5100S**][link-w5100s] ethernet chip, **W5100S-EVB-Pico** - ethernet I/O module built on [**RP2040**][link-rp2040] and WIZnet's [**W5100S**][link-w5100s] ethernet chip,  **W5500-EVB-Pico** and **W55RP20-EVB-Pico** - ethernet I/O module built on [**RP2040**][link-rp2040] and WIZnet's [**W5500**][link-w5500] ethernet chip, **W5100S-EVB-Pico2** - ethernet I/O module built on [**RP2350**][link-rp2350] and WIZnet's [**W5100S**][link-w5100s] ethernet chip or **W5100S-EVB-Pico2** - ethernet I/O module built on [**RP2350**][link-rp2350] and WIZnet's [**W5100S**][link-w5100s] ethernet chip.
+
+<a name="Hardware_description"></a>
+## 3. Hardware description
 
 - [**Raspberry Pi Pico**][link-raspberry_pi_pico] or [**Raspberry Pi Pico2**][link-raspberry_pi_pico2] & [**WIZnet Ethernet HAT**][link-wiznet_ethernet_hat]
 - [**W5100S-EVB-Pico**][link-w5100s-evb-pico]
@@ -35,8 +31,33 @@ The AWS IoT SDK examples use **Raspberry Pi Pico** and **WIZnet Ethernet HAT** -
 - [**W5100S-EVB-Pico2**][link-w5100s-evb-pico2]
 - [**W5500-EVB-Pico2**][link-w5500-evb-pico2]
 
-<a name="aws_iot_sdk_example_structure"></a>
-## AWS IoT SDK example structure
+
+## 4. Set up your Development Environment
+Please refer to the [**Applicable operating systems for this guide**](#Applicable_operating_systems_for_this_guiden).
+
+## 5. Set up device hardware
+Please refer to the [**Hardware description**](#Hardware_description).
+
+## 6. Set up your AWS account and permissions
+
+If you do not have an existing AWS account and user, refer to the online AWS documentation at [**Set up your AWS Account**][link-set_up_your_aws_account].  To get started, follow the steps outlined in the sections below:
+- [**Sign up for an AWS account**][link-sign_up_for_an_aws_account]
+- [**Create an administrative user**][link-create_an_administrative_account]
+- [**Open the AWS IoT console**][link-open_the_aws_iot_console]
+
+## 7. Create resources in AWS IoT
+
+Refer to the online AWS documentation at [**Create AWS IoT Resources**][link-create_aws_iot_resources].  Follow the steps outlined in these sections to provision resources for your device:
+- [**Create an AWS IoT Policy**][link_create_an_aws_iot_policy]
+- [**Create a thing object**][link_create_a_thing_object]
+
+## 8. Provision the Device with credentials
+
+Please refer to [**Step 4: Setup Connect AWS IoT through MQTT Example**][link_provision_the_device_with_credentials] at the How to Test Connect to AWS IoT through MQTT Example.
+
+## 9. Build and Run
+
+### 9.1 AWS IoT SDK example structure
 
 Examples are available at '**WIZnet-PICO-AWS-C/examples/**' directory. As of now, following examples are provided.
 
@@ -70,10 +91,7 @@ The structure of this WIZnet-PICO-AWS-C 2.0.0 version or higher has changed a lo
 
 - [**WIZnet-PICO-AWS-C 1.0.0 version**][link-wiznet_pico_aws_c_1_0_0_version]
 
-
-
-<a name="aws_iot_sdk_example_testing"></a>
-## AWS IoT SDK example testing
+### 9.2 AWS IoT SDK example testing
 
 1. Download
 
@@ -93,9 +111,9 @@ git clone --recurse-submodules https://github.com/WIZnet-ioNIC/WIZnet-PICO-AWS-C
 
 With Visual Studio Code, the library set as a submodule is automatically downloaded, so it doesn't matter whether the library set as a submodule is an empty directory or not, so refer to it.
 
-2. Setup ethetnet chip
+2. Setup Board
 
-Setup the ethernet chip in '**CMakeLists.txt**' in '**WIZnet-PICO-AWS-C/**' directory according to the evaluation board to be used referring to the following.
+Setup the Board in '**CMakeLists.txt**' in '**WIZnet-PICO-AWS-C/**' directory according to the evaluation board to be used referring to the following.
 
 - WIZnet Ethernet HAT
 - W5100S-EVB-Pico
@@ -143,7 +161,6 @@ set(BOARD_NAME W5500_EVB_PICO2)
 
 Please refer to 'README.md' in each example directory to find detail guide for testing AWS IoT SDK examples.
 
-
 > ※ If the board pauses when rebooting using W55RP20-EVB-Pico, patch it as follows.
 >
 > ```cpp
@@ -151,8 +168,7 @@ Please refer to 'README.md' in each example directory to find detail guide for t
 > git apply ./patches/0001_pico_sdk_clocks.patch
 > ```
 
-<a name="how_to_use_port_directory"></a>
-## How to use port directory
+### 9.3 How to use port directory
 
 We moved the MCU dependent code to the port directory. The tree of port is shown below.
 
@@ -415,6 +431,19 @@ bool wizchip_1ms_timer_callback(struct repeating_timer *t);
 void wizchip_delay_ms(uint32_t ms);
 ```
 
+## 10. Verify messages in AWS IoT Core
+
+Please refer to [**Step 6: Upload and Run**][link_upload_and_run] at the How to Test Connect to AWS IoT through MQTT Example.
+
+
+
+## 11. Troubleshooting
+
+If any problems occur and the data is not displayed on the serial terminal, first check if the board setup was done correctly, or if the Ethernet cable is connected.
+
+If the 'PUBLISH OK' message is not displayed, check if the AWS IoT configuration was set up correctly and if the device certificate and key were properly configured.
+
+If you are still having problems, Check related category in our [**WIZnet Forum**][link_wiznet_forum].
 
 
 <!--
@@ -446,3 +475,13 @@ Link
 [link-port_aws_iot_device_sdk_embedded_c]: https://github.com/WIZnet-ioNIC/WIZnet-PICO-AWS-C/tree/main/port/aws-iot-device-sdk-embedded-C
 [link-port_timer]: https://github.com/WIZnet-ioNIC/WIZnet-PICO-AWS-C/tree/main/port/timer
 [link-wiznet_pico_aws_c_1_0_0_version]: https://github.com/WIZnet-ioNIC/WIZnet-PICO-AWS-C/tree/0e3f9188b56df9dd082dbacb252cb7cf37e05c55
+[link-set_up_your_aws_account]: https://docs.aws.amazon.com/iot/latest/developerguide/setting-up.html
+[link-sign_up_for_an_aws_account]: https://docs.aws.amazon.com/iot/latest/developerguide/setting-up.html#aws-registration
+[link-create_an_administrative_account]: https://docs.aws.amazon.com/iot/latest/developerguide/setting-up.html#create-an-admin
+[link-open_the_aws_iot_console]: https://docs.aws.amazon.com/iot/latest/developerguide/setting-up.html#iot-console-signin
+[link-create_aws_iot_resources]: https://docs.aws.amazon.com/iot/latest/developerguide/create-iot-resources.html
+[link_create_an_aws_iot_policy]: https://docs.aws.amazon.com/iot/latest/developerguide/create-iot-resources.html#create-iot-policy
+[link_create_a_thing_object]: https://docs.aws.amazon.com/iot/latest/developerguide/create-iot-resources.html#create-aws-thing
+[link_provision_the_device_with_credentials]: https://github.com/WIZnet-ioNIC/WIZnet-PICO-AWS-C/tree/main/examples/aws_iot_mqtt#step-4-setup-connect-aws-iot-through-mqtt-example
+[link_upload_and_run]: https://github.com/WIZnet-ioNIC/WIZnet-PICO-AWS-C/tree/main/examples/aws_iot_mqtt#step-6-upload-and-run
+[link_wiznet_forum]: https://maker.wiznet.io/forum/
