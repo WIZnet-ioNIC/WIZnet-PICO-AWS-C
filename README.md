@@ -31,6 +31,22 @@ The AWS IoT SDK examples use **Raspberry Pi Pico** and **WIZnet Ethernet HAT** -
 - [**W5100S-EVB-Pico2**][link-w5100s-evb-pico2]
 - [**W5500-EVB-Pico2**][link-w5500-evb-pico2]
 
+### 3.1 Datasheet
+
+Please refer to the Datasheet section on the page linked above.
+
+### 3.2 Standard kit contents
+
+Please refer to the How to Buy section on the page linked above.
+
+### 3.3 User Provided items
+
+Raspberry Pi Pico, W5100S-EVB-Pico, or W5500-EVB-Pico require a 5-pin micro USB cable, while W55RP20-EVB-Pico, W5100S-EVB-Pico2, or W5500-EVB-Pico2 require a USB Type-C cable.
+
+### 3.4 3rd party purchasable items
+
+Not applicable.
+
 
 ## 4. Set up your Development Environment
 Please refer to the [**Applicable operating systems for this guide**](#Applicable_operating_systems_for_this_guiden).
