@@ -11,7 +11,7 @@
 <a name="Applicable_operating_systems_for_this_guide"></a>
 ### 1.2 Applicable operating systems for this guide
 
-The AWS IoT SDK examples were tested by configuring the development environment for **Windows**. Please refer to the '**9.2. Building on MS Windows**' section of '**Getting started with Raspberry Pi Pico**' document below and configure accordingly.
+These examples were tested after configuring the development environment on **Windows**. Please refer to '**Chapter 3: Installing the Raspberry Pi Pico VS Code Extension**' in the document below and configure accordingly.
 
 - [**Getting started with Raspberry Pi Pico**][link-getting_started_with_raspberry_pi_pico]
 
