@@ -97,7 +97,7 @@ int ssl_transport_init(tlsContext_t *tlsContext, int *socket_fd, const char *hos
 #endif
 
 #if defined(MBEDTLS_DEBUG_C)
-    debug_set_threshold(DEBUG_LEVEL);
+    mbedtls_debug_set_threshold(DEBUG_LEVEL);
 #endif
 
     /*

@@ -19,7 +19,7 @@
  * ----------------------------------------------------------------------------------------------------
  */
 /* Buffer */
-#define MQTT_BUF_MAX_SIZE (1024 * 2)
+#define MQTT_BUF_MAX_SIZE (1024 * 16)
 #define MQTT_DOMAIN_MAX_SIZE 128
 
 /* Timeout */

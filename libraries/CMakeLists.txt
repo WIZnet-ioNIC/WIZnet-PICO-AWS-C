@@ -171,6 +171,7 @@ target_include_directories(SNTP_FILES PUBLIC
 # AWS SDK
 include(${AWS_SDK_DIR}/libraries/standard/coreHTTP/httpFilePaths.cmake)
 include(${AWS_SDK_DIR}/libraries/standard/coreMQTT/mqttFilePaths.cmake)
+include(${AWS_SDK_DIR}/libraries/standard/backoffAlgorithm/backoffAlgorithmFilePaths.cmake)
 
 add_library(AWS_SDK_FILES STATIC)
 
@@ -178,10 +179,12 @@ target_sources(AWS_SDK_FILES PUBLIC
         ${HTTP_SOURCES}
         ${MQTT_SOURCES}
         ${MQTT_SERIALIZER_SOURCES}
+        ${BACKOFF_ALGORITHM_SOURCES}
         )
 
 target_include_directories(AWS_SDK_FILES PUBLIC
         ${HTTP_INCLUDE_PUBLIC_DIRS}
         ${MQTT_INCLUDE_PUBLIC_DIRS}
+        ${BACKOFF_ALGORITHM_INCLUDE_PUBLIC_DIRS}
         ${PORT_DIR}/aws-iot-device-sdk-embedded-C/inc
         )

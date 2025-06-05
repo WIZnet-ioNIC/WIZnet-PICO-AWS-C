@@ -20,6 +20,8 @@
 #include "timer_interface.h"
 #include "util.h"
 
+#include "time.h"
+
 /**
  * ----------------------------------------------------------------------------------------------------
  * Macros
@@ -38,6 +40,9 @@ mqtt_config_t g_mqtt_config;
 
 /* SSL context pointer */
 tlsContext_t *g_mqtt_tls_context_ptr;
+
+MQTTPubAckInfo_t incomingPublishRecords[MQTT_SUBSCRIPTION_MAX_NUM];
+MQTTPubAckInfo_t outgoingPublishRecords[MQTT_SUBSCRIPTION_MAX_NUM];
 
 /**
  * ----------------------------------------------------------------------------------------------------
@@ -191,6 +196,23 @@ int mqtt_transport_subscribe(uint8_t qos, char *subscribe_topic)
         return -1;
     }
 
+    if (g_mqtt_config.subscribe_count != 0)
+    {
+        g_mqtt_config.subscribe_count = 0;
+        memset(g_mqtt_config.mqtt_subscribe_info, 0, sizeof(g_mqtt_config.mqtt_subscribe_info));
+    }
+        
+    if (g_mqtt_config.subscribe_count == 0)
+    {
+        ret = MQTT_InitStatefulQoS(&g_mqtt_config.mqtt_context, incomingPublishRecords, MQTT_SUBSCRIPTION_MAX_NUM, outgoingPublishRecords, MQTT_SUBSCRIPTION_MAX_NUM);
+
+        if (ret != MQTTSuccess)
+        {
+            printf("Failed to initialize stateful QoS, error: %d\n", ret);
+            return -1;
+        }
+    }
+
     g_mqtt_config.mqtt_subscribe_info[g_mqtt_config.subscribe_count].qos = qos;
     g_mqtt_config.mqtt_subscribe_info[g_mqtt_config.subscribe_count].pTopicFilter = subscribe_topic;
     g_mqtt_config.mqtt_subscribe_info[g_mqtt_config.subscribe_count].topicFilterLength = strlen(subscribe_topic);
@@ -213,11 +235,17 @@ int mqtt_transport_subscribe(uint8_t qos, char *subscribe_topic)
     return 0;
 }
 
-int8_t mqtt_transport_connect(uint8_t sock, uint8_t ssl_flag, uint8_t *recv_buf, uint32_t recv_buf_len, uint8_t *domain, uint32_t port, tlsContext_t *tls_context)
+int8_t mqtt_transport_connect(uint8_t sock, uint8_t ssl_flag, uint8_t *recv_buf, uint32_t recv_buf_len, uint8_t *domain, uint32_t port, tlsContext_t *tls_context, BackoffAlgorithmContext_t *backoff_context)
 {
     bool session_present;
     int ret = -1;
     int packet_id = 0;
+   
+    BackoffAlgorithmStatus_t backoff_status;
+    uint16_t next_backoff;
+    uint32_t random_value;
+
+    g_mqtt_config.ssl_flag = ssl_flag;
 
     if (g_mqtt_config.mqtt_state != MQTT_IDLE)
         return -1;
@@ -234,98 +262,112 @@ int8_t mqtt_transport_connect(uint8_t sock, uint8_t ssl_flag, uint8_t *recv_buf,
         }
     }
 
-    if (ssl_flag == 0)
+    while (backoff_context->attemptsDone < MAX_RECONNECT_ATTEMPTS)
     {
-        ret = socket(sock, Sn_MR_TCP, 0, 0x00); // port 0 : any port
-        if (ret != sock)
+        if (ssl_flag == 0)
         {
-            mqtt_transport_close(sock, &g_mqtt_config);
+            ret = socket(sock, Sn_MR_TCP, 0, 0x00); // port 0 : any port
+            if (ret != sock)
+            {
+                mqtt_transport_close(sock, &g_mqtt_config);
 
-            return -1;
-        }
-        ret = connect(sock, g_mqtt_config.mqtt_ip, port);
-        if (ret != SOCK_OK)
-        {
-            mqtt_transport_close(sock, &g_mqtt_config);
+                return -1;
+            }
+            ret = connect(sock, g_mqtt_config.mqtt_ip, port);
+            if (ret != SOCK_OK)
+            {
+                mqtt_transport_close(sock, &g_mqtt_config);
 
-            return -1;
-        }
-        g_transport_interface.send = mqtt_write;
-        g_transport_interface.recv = mqtt_read;
-    }
-    else
-    {
-        /* Initialize SSL context */
-        ret = ssl_transport_init(tls_context, (int *)(intptr_t)sock, domain);
-        if (ret != 0)
-        {
-            mqtt_transport_close(sock, &g_mqtt_config);
-            printf("SSL initialization error : %d\n", ret);
-
-            return ret;
+                return -1;
+            }
+            g_transport_interface.send = mqtt_write;
+            g_transport_interface.recv = mqtt_read;
         }
         else
         {
-            printf("SSL initialization is success\n");
-        }
+            /* Initialize SSL context */
+            ret = ssl_transport_init(tls_context, (int *)(intptr_t)sock, domain);
+            if (ret != 0)
+            {
+                mqtt_transport_close(sock, &g_mqtt_config);
+                printf("SSL initialization error : %d\n", ret);
 
-        ret = ssl_socket_connect_timeout(tls_context, g_mqtt_config.mqtt_ip, port, 0, MQTT_TIMEOUT);
+                return ret;
+            }
+            else
+            {
+                printf("SSL initialization is success\n");
+            }
+
+            ret = ssl_socket_connect_timeout(tls_context, g_mqtt_config.mqtt_ip, port, 0, MQTT_TIMEOUT);
+
+            if (ret != 0)
+            {
+                printf("SSL connection is error : %d\n", ret);
+                ssl_transport_deinit(tls_context);
+                
+                continue;
+            }
+            else
+            {
+                printf("SSL connection is success\n");
+            }
+            g_mqtt_tls_context_ptr = tls_context;
+
+            g_transport_interface.send = mqtts_write;
+            g_transport_interface.recv = mqtts_read;
+        }
+        g_network_context.socketDescriptor = sock;
+        g_transport_interface.pNetworkContext = &g_network_context;
+        g_mqtt_config.mqtt_fixed_buf.pBuffer = recv_buf;
+        g_mqtt_config.mqtt_fixed_buf.size = recv_buf_len;
+
+        /* Initialize MQTT context */
+        ret = MQTT_Init(&g_mqtt_config.mqtt_context,
+                        &g_transport_interface,
+                        (MQTTGetCurrentTimeFunc_t)millis,
+                        mqtt_event_callback,
+                        &g_mqtt_config.mqtt_fixed_buf);
 
         if (ret != 0)
         {
             mqtt_transport_close(sock, &g_mqtt_config);
-            printf("SSL connection is error : %d\n", ret);
+            printf("MQTT initialization is error : %d\n", ret);
 
-            return ret;
+            return -1;
         }
         else
         {
-            printf("SSL connection is success\n");
+            printf("MQTT initialization is success\n");
         }
-        g_mqtt_tls_context_ptr = tls_context;
 
-        g_transport_interface.send = mqtts_write;
-        g_transport_interface.recv = mqtts_read;
+        /* Connect to the MQTT broker */
+        ret = MQTT_Connect(&g_mqtt_config.mqtt_context, &g_mqtt_config.mqtt_connect_info, NULL, MQTT_TIMEOUT, &session_present);
+        if (ret != 0)
+        {
+            mqtt_transport_close(sock, &g_mqtt_config);
+            printf("MQTT connection is error : %d\n", ret);
+
+            random_value = (uint32_t)rand();
+            backoff_status = BackoffAlgorithm_GetNextBackoff(backoff_context, random_value, &next_backoff);  
+            if (backoff_status == BackoffAlgorithmRetriesExhausted)
+            {
+                printf("Max reconnect attempts reached. Stopping reconnect attempts. \n");
+                return -1;
+            }
+            else
+            {
+                printf("Backoff attempts: %d, next backoff: %d ms\n", backoff_context->attemptsDone, next_backoff);
+                sleep_ms(next_backoff);
+            }
+        }
+        else
+        {
+            printf("MQTT connection is success\n");
+            return 0;
+        }
+
     }
-    g_network_context.socketDescriptor = sock;
-    g_transport_interface.pNetworkContext = &g_network_context;
-    g_mqtt_config.mqtt_fixed_buf.pBuffer = recv_buf;
-    g_mqtt_config.mqtt_fixed_buf.size = recv_buf_len;
-
-    /* Initialize MQTT context */
-    ret = MQTT_Init(&g_mqtt_config.mqtt_context,
-                    &g_transport_interface,
-                    (MQTTGetCurrentTimeFunc_t)millis,
-                    mqtt_event_callback,
-                    &g_mqtt_config.mqtt_fixed_buf);
-
-    if (ret != 0)
-    {
-        mqtt_transport_close(sock, &g_mqtt_config);
-        printf("MQTT initialization is error : %d\n", ret);
-
-        return -1;
-    }
-    else
-    {
-        printf("MQTT initialization is success\n");
-    }
-
-    /* Connect to the MQTT broker */
-    ret = MQTT_Connect(&g_mqtt_config.mqtt_context, &g_mqtt_config.mqtt_connect_info, NULL, MQTT_TIMEOUT, &session_present);
-    if (ret != 0)
-    {
-        mqtt_transport_close(sock, &g_mqtt_config);
-        printf("MQTT connection is error : %d\n", ret);
-
-        return -1;
-    }
-    else
-    {
-        printf("MQTT connection is success\n");
-    }
-
-    return 0;
 }
 
 int mqtt_transport_close(uint8_t sock, mqtt_config_t *mqtt_config)
@@ -339,7 +381,7 @@ int mqtt_transport_close(uint8_t sock, mqtt_config_t *mqtt_config)
         mbedtls_ssl_config_free(&g_mqtt_tls_context_ptr->conf);
         mbedtls_ctr_drbg_free(&g_mqtt_tls_context_ptr->ctr_drbg);
 #if defined(MBEDTLS_ENTROPY_C)
-        mbedtls_entropy_free(&g_tlsContext.entropy);
+        mbedtls_entropy_free(&g_mqtt_tls_context_ptr->entropy);
 #endif
         mbedtls_x509_crt_free(&g_mqtt_tls_context_ptr->cacert);
         mbedtls_x509_crt_free(&g_mqtt_tls_context_ptr->clicert);
