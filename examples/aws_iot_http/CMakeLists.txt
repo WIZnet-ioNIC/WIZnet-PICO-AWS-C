@@ -4,14 +4,18 @@ add_executable(${TARGET_NAME}
         ${TARGET_NAME}.c
         )
 
+include_directories(${PICO_SDK_PATH}/src/rp2_common/hardware_rtc/include)
+
 target_link_libraries(${TARGET_NAME} PRIVATE
         pico_stdlib
         hardware_spi
         hardware_dma
+        pico_aon_timer
         ETHERNET_FILES
         IOLIBRARY_FILES
         DHCP_FILES
         DNS_FILES
+        SNTP_FILES
         AWS_SDK_PORT_FILES
         TIMER_FILES
         mbedcrypto

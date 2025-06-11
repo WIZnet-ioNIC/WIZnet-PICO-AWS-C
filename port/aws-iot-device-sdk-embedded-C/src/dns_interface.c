@@ -91,6 +91,8 @@ int8_t DNS_run_handler(uint8_t *dns_ip, uint8_t *name, uint8_t *ip_from_dns, uin
     uint8_t ip[4];
     uint16_t len, port;
 
+    uint8_t addr_len;
+
     if (dns_state == STATE_DNS_STOP)
         return DNS_RET_STOPPED;
 
@@ -103,7 +105,11 @@ int8_t DNS_run_handler(uint8_t *dns_ip, uint8_t *name, uint8_t *ip_from_dns, uin
 
     case STATE_DNS_SEND_QUERY:
         len = dns_makequery(0, (char *)name, pDNSMSG, MAX_DNS_BUF_SIZE);
-        sendto(DNS_SOCKET, pDNSMSG, len, dns_ip, IPPORT_DOMAIN);
+#if ((_WIZCHIP_ == 6100) || (_WIZCHIP_ == 6300))
+	    sendto(DNS_SOCKET, pDNSMSG, len, dns_ip, IPPORT_DOMAIN, 4);
+#else
+	    sendto(DNS_SOCKET, pDNSMSG, len, dns_ip, IPPORT_DOMAIN);
+#endif
 #ifdef _DNS_DEBUG_
         printf("> DNS Query to DNS Server : %d.%d.%d.%d\r\n", dns_ip[0], dns_ip[1], dns_ip[2], dns_ip[3]);
 #endif
@@ -117,7 +123,11 @@ int8_t DNS_run_handler(uint8_t *dns_ip, uint8_t *name, uint8_t *ip_from_dns, uin
         {
             if (len > MAX_DNS_BUF_SIZE)
                 len = MAX_DNS_BUF_SIZE;
-            len = recvfrom(DNS_SOCKET, pDNSMSG, len, ip, &port);
+#if ((_WIZCHIP_ == 6100) || (_WIZCHIP_ == 6300))
+			len = recvfrom(DNS_SOCKET, pDNSMSG, len, ip, &port, &addr_len);
+#else
+			len = recvfrom(DNS_SOCKET, pDNSMSG, len, ip, &port);
+#endif
 #ifdef _DNS_DEBUG_
             printf("> Receive DNS message from %d.%d.%d.%d(%d). len = %d\r\n", ip[0], ip[1], ip[2], ip[3], port, len);
 #endif
