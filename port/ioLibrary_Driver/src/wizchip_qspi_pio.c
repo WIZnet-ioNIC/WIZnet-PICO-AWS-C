@@ -160,12 +160,10 @@ static void pio_spi_gpio_setup(spi_pio_state_t *state) {
     gpio_set_dir(state->spi_config->irq_pin, GPIO_IN);
     gpio_set_pulls(state->spi_config->irq_pin, false, false);
 #else //W55RP20
-    // Setup MOSI, MISO
+    // Setup MOSI, MISO and IRQ
     gpio_init(state->spi_config->data_out_pin);
     gpio_set_dir(state->spi_config->data_out_pin, GPIO_OUT);
     gpio_put(state->spi_config->data_out_pin, false);
-    gpio_init(state->spi_config->data_in_pin);
-    gpio_set_dir(state->spi_config->data_in_pin, GPIO_IN);
 
     // Setup CS
     gpio_init(state->spi_config->cs_pin);
@@ -400,7 +398,6 @@ static void wiznet_spi_pio_frame_start(void) {
         gpio_set_function(active_state->spi_config->data_out_pin, active_state->pio_func_sel);
         gpio_set_function(active_state->spi_config->clock_pin, active_state->pio_func_sel);
         gpio_pull_down(active_state->spi_config->clock_pin);
-
     #endif
     // Pull CS low
     cs_set(active_state, false);
@@ -490,7 +487,7 @@ void wiznet_spi_pio_read_byte(uint8_t op_code, uint16_t AddrSel, uint8_t *rx, ui
 
   pio_sm_set_enabled(active_state->pio, active_state->pio_sm, false);
   pio_sm_exec(active_state->pio, active_state->pio_sm, pio_encode_mov(pio_pins, pio_null)); 
-
+  
   #endif
 }
 
