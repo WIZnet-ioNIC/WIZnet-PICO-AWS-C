@@ -14,7 +14,7 @@
 #include "port_common.h"
 
 #include "wizchip_conf.h"
-#include "w5x00_spi.h"
+#include "wizchip_spi.h"
 
 #include "dhcp.h"
 #include "timer.h"
@@ -54,7 +54,32 @@ static wiz_NetInfo g_net_info =
         .sn = {255, 255, 255, 0},                    // Subnet Mask
         .gw = {192, 168, 11, 1},                     // Gateway
         .dns = {8, 8, 8, 8},                         // DNS server
-        .dhcp = NETINFO_DHCP                         // DHCP
+        .dhcp = NETINFO_DHCP,                       //TODO: will be modified after 'dhcp' and 'ipmode' merge.
+#if _WIZCHIP_ > W5500
+        .lla = {0xfe, 0x80, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00,
+                0x02, 0x08, 0xdc, 0xff,
+                0xfe, 0x57, 0x57, 0x25},             // Link Local Address
+        .gua = {0x00, 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00},             // Global Unicast Address
+        .sn6 = {0xff, 0xff, 0xff, 0xff,
+                0xff, 0xff, 0xff, 0xff,
+                0x00, 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00},             // IPv6 Prefix
+        .gw6 = {0x00, 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00},             // Gateway IPv6 Address
+        .dns6 = {0x20, 0x01, 0x48, 0x60,
+                0x48, 0x60, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x88, 0x88},             // DNS6 server
+        .ipmode = NETINFO_STATIC_ALL                // this 'ipmode' is never used in this project.  
+#else
+        .dhcp = NETINFO_STATIC        
+#endif
 };
 static uint8_t g_ethernet_buf[ETHERNET_BUF_MAX_SIZE] = {
     0,
