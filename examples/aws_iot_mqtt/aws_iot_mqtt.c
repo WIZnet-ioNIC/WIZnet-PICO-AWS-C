@@ -1,15 +1,16 @@
 /**
- * Copyright (c) 2021 WIZnet Co.,Ltd
- *
- * SPDX-License-Identifier: BSD-3-Clause
- */
+    Copyright (c) 2021 WIZnet Co.,Ltd
+
+    SPDX-License-Identifier: BSD-3-Clause
+*/
 
 /**
- * ----------------------------------------------------------------------------------------------------
- * Includes
- * ----------------------------------------------------------------------------------------------------
- */
+    ----------------------------------------------------------------------------------------------------
+    Includes
+    ----------------------------------------------------------------------------------------------------
+*/
 #include <stdio.h>
+#include <stdint.h>
 #include <string.h>
 
 #include "port_common.h"
@@ -36,13 +37,10 @@
 #include "mqtt_certificate.h"
 
 /**
- * ----------------------------------------------------------------------------------------------------
- * Macros
- * ----------------------------------------------------------------------------------------------------
- */
-/* Clock */
-#define PLL_SYS_KHZ (133 * 1000)
-
+    ----------------------------------------------------------------------------------------------------
+    Macros
+    ----------------------------------------------------------------------------------------------------
+*/
 /* Buffer */
 #define ETHERNET_BUF_MAX_SIZE (1024 * 16)
 
@@ -90,38 +88,47 @@
  * ----------------------------------------------------------------------------------------------------
  */
 /* Network */
-static wiz_NetInfo g_net_info =
-    {
-        .mac = {0x00, 0x08, 0xDC, 0x12, 0x34, 0x56}, // MAC address
-        .ip = {192, 168, 11, 2},                     // IP address
-        .sn = {255, 255, 255, 0},                    // Subnet Mask
-        .gw = {192, 168, 11, 1},                     // Gateway
-        .dns = {8, 8, 8, 8},                         // DNS server
-        .dhcp = NETINFO_DHCP,                       //TODO: will be modified after 'dhcp' and 'ipmode' merge.
+static wiz_NetInfo g_net_info = {
+    .mac = {0x00, 0x08, 0xDC, 0x12, 0x34, 0x56}, // MAC address
+    .ip = {192, 168, 11, 2},                     // IP address
+    .sn = {255, 255, 255, 0},                    // Subnet Mask
+    .gw = {192, 168, 11, 1},                     // Gateway
+    .dns = {8, 8, 8, 8},                         // DNS server
+    .dhcp = NETINFO_DHCP,                       //TODO: will be modified after 'dhcp' and 'ipmode' merge.
 #if _WIZCHIP_ > W5500
-        .lla = {0xfe, 0x80, 0x00, 0x00,
-                0x00, 0x00, 0x00, 0x00,
-                0x02, 0x08, 0xdc, 0xff,
-                0xfe, 0x57, 0x57, 0x25},             // Link Local Address
-        .gua = {0x00, 0x00, 0x00, 0x00,
-                0x00, 0x00, 0x00, 0x00,
-                0x00, 0x00, 0x00, 0x00,
-                0x00, 0x00, 0x00, 0x00},             // Global Unicast Address
-        .sn6 = {0xff, 0xff, 0xff, 0xff,
-                0xff, 0xff, 0xff, 0xff,
-                0x00, 0x00, 0x00, 0x00,
-                0x00, 0x00, 0x00, 0x00},             // IPv6 Prefix
-        .gw6 = {0x00, 0x00, 0x00, 0x00,
-                0x00, 0x00, 0x00, 0x00,
-                0x00, 0x00, 0x00, 0x00,
-                0x00, 0x00, 0x00, 0x00},             // Gateway IPv6 Address
-        .dns6 = {0x20, 0x01, 0x48, 0x60,
-                0x48, 0x60, 0x00, 0x00,
-                0x00, 0x00, 0x00, 0x00,
-                0x00, 0x00, 0x88, 0x88},             // DNS6 server
-        .ipmode = NETINFO_STATIC_ALL                // this 'ipmode' is never used in this project.  
+    .lla = {
+        0xfe, 0x80, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00,
+        0x02, 0x08, 0xdc, 0xff,
+        0xfe, 0x57, 0x57, 0x25
+    },             // Link Local Address
+    .gua = {
+        0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00
+    },             // Global Unicast Address
+    .sn6 = {
+        0xff, 0xff, 0xff, 0xff,
+        0xff, 0xff, 0xff, 0xff,
+        0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00
+    },             // IPv6 Prefix
+    .gw6 = {
+        0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00
+    },             // Gateway IPv6 Address
+    .dns6 = {
+        0x20, 0x01, 0x48, 0x60,
+        0x48, 0x60, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x88, 0x88
+    },             // DNS6 server
+    .ipmode = NETINFO_STATIC_ALL                // this 'ipmode' is never used in this project.
 #else
-        .dhcp = NETINFO_STATIC        
+    .dhcp = NETINFO_STATIC
 #endif
 };
 static uint8_t g_ethernet_buf[ETHERNET_BUF_MAX_SIZE] = {
@@ -149,13 +156,10 @@ tlsContext_t g_mqtt_tls_context;
 BackoffAlgorithmContext_t backoff_context;
 
 /**
- * ----------------------------------------------------------------------------------------------------
- * Functions
- * ----------------------------------------------------------------------------------------------------
- */
-/* Clock */
-static void set_clock_khz(void);
-
+    ----------------------------------------------------------------------------------------------------
+    Functions
+    ----------------------------------------------------------------------------------------------------
+*/
 /* DHCP */
 static void wizchip_dhcp_init(void);
 static void wizchip_dhcp_assign(void);
@@ -165,13 +169,15 @@ static void wizchip_dhcp_conflict(void);
 static void sntp_set_time(datetime *sntp_time);
 static void set_system_time(void);
 
+/* MQTT */
+void mqtt_event_callback(MQTTContext_t *pContext, MQTTPacketInfo_t *pPacketInfo, MQTTDeserializedInfo_t *pDeserializedInfo);
+
 /**
- * ----------------------------------------------------------------------------------------------------
- * Main
- * ----------------------------------------------------------------------------------------------------
- */
-int main()
-{
+    ----------------------------------------------------------------------------------------------------
+    Main
+    ----------------------------------------------------------------------------------------------------
+*/
+int main() {
     /* Initialize */
     int retval = 0;
     uint32_t tick_start = 0;
@@ -179,8 +185,6 @@ int main()
     uint32_t pub_cnt = 0;
     uint32_t start_ms = 0;
     datetime sntp_time;
-
-    set_clock_khz();
 
     stdio_init_all();
 
@@ -195,31 +199,26 @@ int main()
 
 #if HAS_RP2040_RTC
     rtc_init();
-    
+
 #elif HAS_POWMAN_TIMER
     aon_timer_start_with_timeofday();
 #endif
 
     wizchip_1ms_timer_initialize(repeating_timer_callback);
 
-    if (g_net_info.dhcp == NETINFO_DHCP) // DHCP
-    {
+    if (g_net_info.dhcp == NETINFO_DHCP) { // DHCP
         wizchip_dhcp_init();
 
-        while (1)
-        {
+        while (1) {
             retval = DHCP_run();
 
-            if (retval == DHCP_IP_LEASED)
-            {
+            if (retval == DHCP_IP_LEASED) {
                 break;
             }
 
             wizchip_delay_ms(1000);
         }
-    }
-    else // static
-    {
+    } else { // static
         network_initialize(g_net_info);
         print_network_information(g_net_info);
     }
@@ -229,18 +228,15 @@ int main()
     start_ms = millis();
 
     /* Get time */
-    do
-    {
+    do {
         retval = SNTP_run(&sntp_time);
 
-        if (retval == 1)
-        {
+        if (retval == 1) {
             break;
         }
     } while ((millis() - start_ms) < RECV_TIMEOUT);
 
-    if (retval != 1)
-    {
+    if (retval != 1) {
         printf(" SNTP failed : %d\n", retval);
 
         while (1)
@@ -248,7 +244,7 @@ int main()
     }
 
     sntp_set_time(&sntp_time);
-    
+
     set_system_time();
 
     /* Setup certificate */
@@ -260,8 +256,7 @@ int main()
 
     retval = mqtt_transport_init(true, MQTT_CLIENT_ID, NULL, NULL, MQTT_KEEP_ALIVE);
 
-    if (retval != 0)
-    {
+    if (retval != 0) {
         printf(" Failed, mqtt_transport_init returned %d\n", retval);
 
         while (1)
@@ -270,17 +265,15 @@ int main()
 
     BackoffAlgorithm_InitializeParams(&backoff_context, BACKOFF_BASE, MAX_BACKOFF_DELAY, MAX_RECONNECT_ATTEMPTS);
 
-    retval = mqtt_transport_connect(SOCKET_MQTT, SSL_FLAG, g_mqtt_buf, MQTT_BUF_MAX_SIZE, MQTT_DOMAIN, TARGET_PORT, &g_mqtt_tls_context, &backoff_context);
-    if (retval != 0)
-    {
+    retval = mqtt_transport_connect(SOCKET_MQTT, SSL_FLAG, g_mqtt_buf, MQTT_BUF_MAX_SIZE, MQTT_DOMAIN, TARGET_PORT, &g_mqtt_tls_context, &backoff_context, mqtt_event_callback);
+    if (retval != 0) {
         printf(" Failed, mqtt_transport_connect returned %d\n", retval);
 
         while (1)
             ;
     }
     retval = mqtt_transport_subscribe(QOS, MQTT_SUB_TOPIC);
-    if (retval != 0)
-    {
+    if (retval != 0) {
         printf(" Failed, mqtt_transport_subscribe returned %d\n", retval);
 
         while (1)
@@ -290,23 +283,19 @@ int main()
     tick_start = millis();
 
     /* Infinite loop */
-    while (1)
-    {
-        if (g_net_info.dhcp == NETINFO_DHCP)
-        {
+    while (1) {
+        if (g_net_info.dhcp == NETINFO_DHCP) {
             DHCP_run();
         }
 
         retval = mqtt_transport_yield();
 
-        if (retval != 0)
-        {
+        if (retval != 0) {
             printf(" Failed, mqtt_transport_yield returned %d\n", retval);
 
-            retval = mqtt_transport_connect(SOCKET_MQTT, SSL_FLAG, g_mqtt_buf, MQTT_BUF_MAX_SIZE, MQTT_DOMAIN, TARGET_PORT, &g_mqtt_tls_context, &backoff_context);
+            retval = mqtt_transport_connect(SOCKET_MQTT, SSL_FLAG, g_mqtt_buf, MQTT_BUF_MAX_SIZE, MQTT_DOMAIN, TARGET_PORT, &g_mqtt_tls_context, &backoff_context, mqtt_event_callback);
 
-            if (retval != 0)
-            {
+            if (retval != 0) {
                 printf(" Failed, mqtt_transport_connect returned %d\n", retval);
 
                 while (1)
@@ -314,8 +303,7 @@ int main()
             }
             retval = mqtt_transport_subscribe(QOS, MQTT_SUB_TOPIC);
 
-            if (retval != 0)
-            {
+            if (retval != 0) {
                 printf(" Failed, mqtt_transport_subscribe returned %d\n", retval);
 
                 while (1)
@@ -327,8 +315,7 @@ int main()
 
         tick_end = millis();
 
-        if (tick_end > tick_start + MQTT_PUB_PERIOD)
-        {
+        if (tick_end > tick_start + MQTT_PUB_PERIOD) {
             tick_start = millis();
 
             sprintf(g_mqtt_pub_msg_buf, "{\"message\":\"Hello, World!\", \"publish count\":\"%d\"}\n", pub_cnt++);
@@ -338,29 +325,12 @@ int main()
 }
 
 /**
- * ----------------------------------------------------------------------------------------------------
- * Functions
- * ----------------------------------------------------------------------------------------------------
- */
-/* Clock */
-static void set_clock_khz(void)
-{
-    // set a system clock frequency in khz
-    set_sys_clock_khz(PLL_SYS_KHZ, true);
-
-    // configure the specified clock
-    clock_configure(
-        clk_peri,
-        0,                                                // No glitchless mux
-        CLOCKS_CLK_PERI_CTRL_AUXSRC_VALUE_CLKSRC_PLL_SYS, // System PLL on AUX mux
-        PLL_SYS_KHZ * 1000,                               // Input frequency
-        PLL_SYS_KHZ * 1000                                // Output (must be same as no divider)
-    );
-}
-
+    ----------------------------------------------------------------------------------------------------
+    Functions
+    ----------------------------------------------------------------------------------------------------
+*/
 /* DHCP */
-static void wizchip_dhcp_init(void)
-{
+static void wizchip_dhcp_init(void) {
     printf(" DHCP client running\n");
 
     DHCP_init(SOCKET_DHCP, g_ethernet_buf);
@@ -368,8 +338,7 @@ static void wizchip_dhcp_init(void)
     reg_dhcp_cbfunc(wizchip_dhcp_assign, wizchip_dhcp_assign, wizchip_dhcp_conflict);
 }
 
-static void wizchip_dhcp_assign(void)
-{
+static void wizchip_dhcp_assign(void) {
     getIPfromDHCP(g_net_info.ip);
     getGWfromDHCP(g_net_info.gw);
     getSNfromDHCP(g_net_info.sn);
@@ -384,8 +353,7 @@ static void wizchip_dhcp_assign(void)
     printf(" DHCP leased time : %ld seconds\n", getDHCPLeasetime());
 }
 
-static void wizchip_dhcp_conflict(void)
-{
+static void wizchip_dhcp_conflict(void) {
     printf(" Conflict IP from DHCP\n");
 
     // halt or reset or any...
@@ -393,8 +361,7 @@ static void wizchip_dhcp_conflict(void)
         ; // this example is halt.
 }
 
-static void sntp_set_time(datetime *sntp_time)
-{
+static void sntp_set_time(datetime *sntp_time) {
     struct tm timeinfo;
 
     timeinfo.tm_year = sntp_time->yy - 1900;
@@ -417,7 +384,7 @@ static void sntp_set_time(datetime *sntp_time)
 
     rtc_set_datetime(&rtc_time);
 
-    
+
 #elif HAS_POWMAN_TIMER
     struct timespec ts;
     ts.tv_sec = mktime(&timeinfo);
@@ -426,8 +393,7 @@ static void sntp_set_time(datetime *sntp_time)
 #endif
 }
 
-mbedtls_time_t sysyem_time_function(mbedtls_time_t *timer)
-{
+mbedtls_time_t sysyem_time_function(mbedtls_time_t *timer) {
 #if HAS_RP2040_RTC
     struct tm timeinfo;
     mbedtls_time_t t;
@@ -444,8 +410,7 @@ mbedtls_time_t sysyem_time_function(mbedtls_time_t *timer)
 
     t = mktime(&timeinfo);
 
-    if (timer)
-    {
+    if (timer) {
         *timer = t;
     }
 
@@ -456,8 +421,7 @@ mbedtls_time_t sysyem_time_function(mbedtls_time_t *timer)
 
     aon_timer_get_time(&ts);
 
-    if (timer)
-    {
+    if (timer) {
         *timer = ts.tv_sec;
     }
 
@@ -465,7 +429,76 @@ mbedtls_time_t sysyem_time_function(mbedtls_time_t *timer)
 
 #endif
 }
-static void set_system_time()
-{
+static void set_system_time() {
     mbedtls_platform_set_time(sysyem_time_function);
+}
+
+void mqtt_event_callback(MQTTContext_t *pContext, MQTTPacketInfo_t *pPacketInfo, MQTTDeserializedInfo_t *pDeserializedInfo) {
+    /*  Handle incoming publish. The lower 4 bits of the publish packet
+        type is used for the dup, QoS, and retain flags. Hence masking
+        out the lower bits to check if the packet is publish. */
+    if ((pPacketInfo->type & 0xF0U) == MQTT_PACKET_TYPE_PUBLISH) {
+        /* Handle incoming publish. */
+        if (pDeserializedInfo->pPublishInfo->payloadLength) {
+            printf("%.*s,%d,%.*s\n", pDeserializedInfo->pPublishInfo->topicNameLength, pDeserializedInfo->pPublishInfo->pTopicName,
+                   pDeserializedInfo->pPublishInfo->payloadLength,
+                   pDeserializedInfo->pPublishInfo->payloadLength, pDeserializedInfo->pPublishInfo->pPayload);
+        }
+    } else {
+        /* Handle other packets. */
+        switch (pPacketInfo->type) {
+        case MQTT_PACKET_TYPE_SUBACK: {
+            printf("Received SUBACK: PacketID=%u\n", pDeserializedInfo->packetIdentifier);
+
+            break;
+        }
+
+        case MQTT_PACKET_TYPE_PINGRESP: {
+            /*  Nothing to be done from application as library handles
+                                      PINGRESP. */
+            printf("Received PINGRESP\n");
+
+            break;
+        }
+
+        case MQTT_PACKET_TYPE_UNSUBACK: {
+            printf("Received UNSUBACK: PacketID=%u\n", pDeserializedInfo->packetIdentifier);
+
+            break;
+        }
+
+        case MQTT_PACKET_TYPE_PUBACK: {
+            printf("Received PUBACK: PacketID=%u\n", pDeserializedInfo->packetIdentifier);
+
+            break;
+        }
+
+        case MQTT_PACKET_TYPE_PUBREC: {
+            printf("Received PUBREC: PacketID=%u\n", pDeserializedInfo->packetIdentifier);
+
+            break;
+        }
+
+        case MQTT_PACKET_TYPE_PUBREL: {
+            /*  Nothing to be done from application as library handles
+                                      PUBREL. */
+            printf("Received PUBREL: PacketID=%u\n", pDeserializedInfo->packetIdentifier);
+
+            break;
+        }
+
+        case MQTT_PACKET_TYPE_PUBCOMP: {
+            /*  Nothing to be done from application as library handles
+                                          PUBCOMP. */
+            printf("Received PUBCOMP: PacketID=%u\n", pDeserializedInfo->packetIdentifier);
+
+            break;
+        }
+
+        /* Any other packet type is invalid. */
+        default: {
+            printf("Unknown packet type received:(%02x).\n", pPacketInfo->type);
+        }
+        }
+    }
 }

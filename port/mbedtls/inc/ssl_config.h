@@ -1,36 +1,34 @@
 
 /**
- * \file ssl_config.h
- *
- * \brief Configuration options (set of defines)
- *
- *  This set of compile-time options may be used to enable
- *  or disable features selectively, and reduce the global
- *  memory footprint.
- */
+    \file ssl_config.h
+
+    \brief Configuration options (set of defines)
+
+    This set of compile-time options may be used to enable
+    or disable features selectively, and reduce the global
+    memory footprint.
+*/
 /*
- *  Copyright (C) 2006-2018, ARM Limited, All Rights Reserved
- *  SPDX-License-Identifier: Apache-2.0
- *
- *  Licensed under the Apache License, Version 2.0 (the "License"); you may
- *  not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *  http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- *  WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *
- *  This file is part of mbed TLS (https://tls.mbed.org)
- */
+    Copyright (C) 2006-2018, ARM Limited, All Rights Reserved
+    SPDX-License-Identifier: Apache-2.0
+
+    Licensed under the Apache License, Version 2.0 (the "License"); you may
+    not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+    This file is part of mbed TLS (https://tls.mbed.org)
+*/
 
 #ifndef MBEDTLS_CONFIG_H
 #define MBEDTLS_CONFIG_H
-
-#include "mbedtls/check_config.h"
 
 #if defined(_MSC_VER) && !defined(_CRT_SECURE_NO_DEPRECATE)
 #define _CRT_SECURE_NO_DEPRECATE 1
@@ -43,6 +41,10 @@
 #define MBEDTLS_PLATFORM_TIME_ALT
 #define MBEDTLS_PLATFORM_MS_TIME_ALT
 #define MBEDTLS_REMOVE_ARC4_CIPHERSUITES
+
+// Add CAN_ECDH which is a prerequisite for ECDHE
+#define MBEDTLS_CAN_ECDH
+
 #define MBEDTLS_KEY_EXCHANGE_ECDHE_RSA_ENABLED
 #define MBEDTLS_KEY_EXCHANGE_RSA_ENABLED
 #define MBEDTLS_KEY_EXCHANGE_DHE_RSA_ENABLED
@@ -62,6 +64,7 @@
 #define MBEDTLS_SSL_SERVER_NAME_INDICATION
 #define MBEDTLS_AESNI_C
 #define MBEDTLS_AES_C
+#define MBEDTLS_CCM_GCM_CAN_AES  // Add this for GCM support
 #define MBEDTLS_ASN1_PARSE_C
 #define MBEDTLS_ASN1_WRITE_C
 
@@ -73,6 +76,8 @@
 #define MBEDTLS_GCM_C
 #define MBEDTLS_MD_C
 #define MBEDTLS_MD5_C
+#define MBEDTLS_MD_CAN_SHA256  // Add this for MD_C prerequisites
+#define MBEDTLS_MD_CAN_SHA384  // Add this for MD_C prerequisites
 #define MBEDTLS_OID_C
 
 #define MBEDTLS_PEM_PARSE_C

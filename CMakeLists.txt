@@ -103,7 +103,7 @@ include(pico_sdk_import.cmake)
 include(wiznet_pico_aws_c_sdk_version.cmake)
 
 # Set project name
-set(PROJECT_NAME WIZNET-PICO-AWS-C)
+set(PROJECT_NAME WIZNET_PICO_AWS_C)
 
 # Set project informations
 project(${PROJECT_NAME} C CXX ASM)
@@ -144,6 +144,7 @@ set(ENABLE_PROGRAMS OFF CACHE BOOL "Build mbedtls programs")
 set(ENABLE_TESTING OFF CACHE BOOL "Build mbedtls testing")
 add_definitions(-DMBEDTLS_CONFIG_FILE="${PORT_DIR}/mbedtls/inc/ssl_config.h")
 add_definitions(-DSET_TRUSTED_CERT_IN_SAMPLES)
+add_definitions(-DPICO_USE_FASTEST_SUPPORTED_CLOCK=1)
 
 # Hardware-specific examples in subdirectories:
 add_subdirectory(examples)
